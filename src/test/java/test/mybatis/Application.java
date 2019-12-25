@@ -29,7 +29,7 @@ public class Application {
         sqlSession = sqlSessionFactory.openSession();
         //System.out.println(sqlSessionFactory);
         CharacterMapper mapper = sqlSession.getMapper(CharacterMapper.class);
-        System.out.println(mapper.CreateCharacter());
+        System.out.println(mapper.createCharacter());
 //        System.out.println(mapper.selectAll());
         sqlSession.close();
     }

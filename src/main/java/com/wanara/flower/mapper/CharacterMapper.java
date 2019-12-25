@@ -15,6 +15,6 @@ public interface CharacterMapper{
             "chara_id int primary key not null, " +
             "char_name varchar(255) not null, " +
             "is_bloomed ENUM('Y','N','U') not null default 'U')")
-    int CreateCharacter();
+    int createCharacter();
 //    public List<Character> selectAll();
 }
