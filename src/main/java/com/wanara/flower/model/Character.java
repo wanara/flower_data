@@ -37,4 +37,13 @@ public class Character {
     public void setIsBloomed(String isBloomed) {
         this.isBloomed = isBloomed;
     }
+
+    @Override
+    public String toString() {
+        return "Character{" +
+                "charaId=" + charaId +
+                ", charaName='" + charaName + '\'' +
+                ", isBloomed='" + isBloomed + '\'' +
+                '}';
+    }
 }

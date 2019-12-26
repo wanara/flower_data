@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface CharacterMapper{
     @Select("select * from `character` where chara_id = #{id}")
-    Character selectChar(@Param("id") Integer charId);
+    Character selectChara(@Param("id") Integer charId);
+
+    @Select("select chara_id from `character`")
+    List<Integer> selectCharaIdList();
 
     @Update("create table flower.character_test(" +
             "chara_id int primary key not null, " +

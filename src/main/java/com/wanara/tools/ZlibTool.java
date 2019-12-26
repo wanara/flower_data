@@ -1,6 +1,7 @@
 package com.wanara.tools;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.*;
 
@@ -9,7 +10,7 @@ import java.util.zip.*;
  * @apiNote https://thiscouldbebetter.wordpress.com/2011/08/26/compressing-and-uncompressing-data-in-java-using-zlib/
  */
 public class ZlibTool {
-	public byte[] compress(File target) {
+	public static byte[] compress(File target) {
 		try (FileInputStream fileInputStream = new FileInputStream(target)) {
 			return compress(CommonUtil.readInputStream(fileInputStream));
 		}catch (IOException e){
@@ -17,7 +18,7 @@ public class ZlibTool {
 		}
 		return null;
 	}
-	public byte[] compress(byte[] bytesToCompress) {
+	public static byte[] compress(byte[] bytesToCompress) {
 		Deflater deflater = new Deflater();
 		deflater.setInput(bytesToCompress);
 		deflater.finish();
@@ -30,28 +31,21 @@ public class ZlibTool {
 		return returnValues;
 	}
 
-	public byte[] compress(String stringToCompress) {
-		byte[] returnValues = null;
-		try {
-			returnValues = this.compress(stringToCompress.getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException uee) {
-			uee.printStackTrace();
-		}
-		return returnValues;
+	public static byte[] compress(String stringToCompress) {
+		return compress(stringToCompress.getBytes(StandardCharsets.UTF_8));
 	}
 
-	public byte[] decompress(byte[] bytesToDecompress) {
+	public static byte[] decompress(byte[] bytesToDecompress) {
 		byte[] returnValues = null;
 		Inflater inflater = new Inflater();
 		int numberOfBytesToDecompress = bytesToDecompress.length;
 		inflater.setInput(bytesToDecompress, 0, numberOfBytesToDecompress);
 
-		int bufferSizeInBytes = numberOfBytesToDecompress;
-		List<Byte> bytesDecompressedSoFar = new ArrayList<Byte>();
+		List<Byte> bytesDecompressedSoFar = new ArrayList<>();
 
 		try {
-			while (inflater.needsInput() == false) {
-				byte[] bytesDecompressedBuffer = new byte[bufferSizeInBytes];
+			while (!inflater.needsInput()) {
+				byte[] bytesDecompressedBuffer = new byte[numberOfBytesToDecompress];
 				int numberOfBytesDecompressedThisTime = inflater.inflate(bytesDecompressedBuffer);
 				for (int b = 0; b < numberOfBytesDecompressedThisTime; b++) {
 					bytesDecompressedSoFar.add(bytesDecompressedBuffer[b]);
@@ -59,7 +53,7 @@ public class ZlibTool {
 			}
 			returnValues = new byte[bytesDecompressedSoFar.size()];
 			for (int b = 0; b < returnValues.length; b++) {
-				returnValues[b] = (byte) (bytesDecompressedSoFar.get(b));
+				returnValues[b] = bytesDecompressedSoFar.get(b);
 			}
 		} catch (DataFormatException dfe) {
 			dfe.printStackTrace();
@@ -69,14 +63,8 @@ public class ZlibTool {
 		return returnValues;
 	}
 
-	public String decompressToString(byte[] bytesToDecompress) {
-		byte[] bytesDecompressed = this.decompress(bytesToDecompress);
-		String returnValue = null;
-		try {
-			returnValue = new String(bytesDecompressed, 0, bytesDecompressed.length, "UTF-8");
-		} catch (UnsupportedEncodingException uee) {
-			uee.printStackTrace();
-		}
-		return returnValue;
+	public static String decompressToString(byte[] bytesToDecompress) {
+		byte[] bytesDecompressed = decompress(bytesToDecompress);
+		return new String(bytesDecompressed, 0, bytesDecompressed.length, StandardCharsets.UTF_8);
 	}
 }

@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class Catcher {
 	private Map<String, String> requestMap;
-	private String connectMethod;
-	public byte[] Download(String connect) {
+	private String requestMethod;
+	public byte[] download(String connect) {
 		byte[] result = null;
 		try {
 			URL url = new URL(connect);
@@ -19,7 +19,7 @@ public class Catcher {
 			con.setRequestProperty("Connection", "Keep-Alive");
 			con.setRequestProperty("User-Agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36");
-			if(connectMethod != null) con.setRequestMethod(connectMethod);
+			if(requestMethod != null) con.setRequestMethod(requestMethod);
 			if(requestMap != null && requestMap.size() > 0){
 				for (String key:
 					 requestMap.keySet()) {
@@ -40,19 +40,21 @@ public class Catcher {
 				result = CommonUtil.readInputStream(con.getInputStream());
 			}
 			con.disconnect();
-		} catch (MalformedURLException e) {
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
 		return  result;
 	}
-	public void setRequestMap(Map<String, String> requestMap){
+	public Catcher setRequestMap(Map<String, String> requestMap){
 		this.requestMap = requestMap;
+		return this;
 	}
-	public static Catcher build(){
+	public Catcher setRequestMethod(String requestMethod) {
+		this.requestMethod = requestMethod;
+		return this;
+	}
+	public static Catcher newInstance(){
 		return new Catcher();
 	}
 }
